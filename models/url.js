@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const urlScheme = new mongoose.Schema({
   shortURLId: {
     type: String,
-    required: true,
+    // required: true,
     unique: true,
   },
   redirectURL: {

@@ -5,11 +5,13 @@ const PORT = 8000;
 
 const app = express();
 
+// Middleware to parse JSON bodies
+app.use(express.json());
+
 app.use("/url", urlRoute);
 
 //Connection to mongodb
-
-connectToMongoDB("mongodb://localhost:27017/shorturl").then(
+connectToMongoDB("mongodb://localhost:27017").then(
   console.log("MongoDB Connected")
 );
 
