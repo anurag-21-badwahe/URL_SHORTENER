@@ -5,7 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
 </head>
+<style>
+    body{
+        font-family:'Times New Roman', Times, serif
+    }
+</style>
 <body>
-    <h1>Hii from server</h1>
+    <h1>Hii from server</h1>  
+    <div>
+        <form method = "POST" action = "/url">
+            <label>Enter your original URL</label>
+            <input type = "text" name = "url" placeholder="https://example.com"/>
+            <button type="submit">Generate</button>
+        </form>
+    </div>
 </body>
 </html>
