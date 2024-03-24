@@ -15,6 +15,9 @@ const handleGenerateNewShortURL = async (req, res) => {
       redirectURL: body.url,
       totalVisits: 0, 
     });
+    return res.render('url',{
+      id:uniqueShortId,
+    })
 
     // Return the unique short ID in the response
     return res.json({ id: uniqueShortId });
@@ -22,6 +25,7 @@ const handleGenerateNewShortURL = async (req, res) => {
     console.error("Error creating URL:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
+
 };
 
 const getTotalClick = async (req, res) => {

@@ -12,6 +12,10 @@
 </style>
 <body>
     <h1>Hii from server</h1>  
+    <% if(locals.id) { %>
+        <p>URL Generated : http://localhost:8000/url/<%= id %></p>
+    <% } %>
+    
     <div>
         <form method = "POST" action = "/url">
             <label>Enter your original URL</label>

@@ -25,21 +25,23 @@ app.use("/", staticRouter);
 //Connection to mongodb
 
 app.get("/url/:shortId", async (req, res) => {
-  const shortId = req.params.shortURLId;
-  const longURL = await URL.findOneAndUpdate(
-    {
-      shortId,
-    },
-    { $inc: { totalVisits: 1 } }
-  );
-  if (!longURL) {
-    // If no matching URL found, return a 404 Not Found response
-    return res.status(404).json({ error: "Short URL not found" });
+  try {
+    const shortId = req.params.shortId; 
+    const longURL = await URL.findOneAndUpdate(
+      { shortURLId: shortId }, 
+      { $inc: { totalVisits: 1 } }
+    );
+    if (!longURL) {
+      return res.status(404).json({ error: "Short URL not found" });
+    }
+    // Redirect to the longURL's redirectURL
+    res.redirect(longURL.redirectURL);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
-  // Redirect to the longURL's redirectURL
-  res.redirect(longURL.redirectURL);
 });
+
 
 app.listen(PORT, () => {
   console.log("Server is running on PORT:", PORT);
