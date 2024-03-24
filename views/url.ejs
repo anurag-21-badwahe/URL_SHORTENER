@@ -1,27 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home Page</title>
-</head>
-<style>
-    body{
-        font-family:'Times New Roman', Times, serif
-    }
-</style>
-<body>
-    <h1>Hii from server</h1>  
-    <% if(locals.id) { %>
-        <p>URL Generated : http://localhost:8000/url/<%= id %></p>
-    <% } %>
-    
-    <div>
-        <form method = "POST" action = "/url">
-            <label>Enter your original URL</label>
-            <input type = "text" name = "url" placeholder="https://example.com"/>
-            <button type="submit">Generate</button>
-        </form>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      .container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      form {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      form input[type="text"] {
+        width: 70%;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      form button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      a {
+        color: #007bff;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>URL Generator</h1>
+    <div class="container">
+      <% if(locals.id) { %>
+      <p>
+        URL Generated :
+        <a href="http://localhost:8000/url<%= id %>" target="_blank"
+          >http://localhost:8000/url<%= id %></a
+        >
+      </p>
+      <% } %>
+      <form method="POST" action="/url">
+        <label>Enter your original URL</label>
+        <input type="text" name="url" placeholder="https://example.com" />
+        <button type="submit">Generate</button>
+      </form>
+      <% if(locals.urls) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Long URL</th>
+            <th>Short URL</th>
+            <th>Total Clicks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% urls.forEach((item) => { %>
+          <tr>
+            <td><%= item.redirectURL %></td>
+            <td>
+              <a
+                href="http://localhost:8000/url/<%= item.shortURLId %>"
+                target="_blank"
+                >http://localhost:8000/url/<%= item.shortURLId %></a
+              >
+            </td>
+            <td><%= item.totalVisits %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      <% } %>
     </div>
-</body>
+    <script>
+        document.getElementById("urlForm").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent default form submission
+            const urlInput = document.getElementById("urlInput").value;
+            
+            // Make an AJAX request to the server to generate the short URL
+            const response = await fetch("/url", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ url: urlInput })
+            });
+            
+            const data = await response.json(); // Parse the JSON response
+            
+            // Update the table with the newly generated URL
+            const urlTable = document.getElementById("urlTable");
+            const newRow = `
+                <tr>
+                    <td>${urlInput}</td>
+                    <td>
+                        <a href="http://localhost:8000/url/${data.id}" target="_blank">
+                            http://localhost:8000/url/${data.id}
+                        </a>
+                    </td>
+                    <td>0</td> <!-- Assuming total clicks are initially 0 -->
+                </tr>
+            `;
+            urlTable.innerHTML += newRow;
+        });
+    </script>
+    
+  </body>
 </html>

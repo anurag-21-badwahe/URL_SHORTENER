@@ -1,8 +1,19 @@
-const express = require("express")
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
+const URL = require("../models/url");
 
-router.get('/',(req,res)=>{
-    return res.render('url')
-})
+router.get("/", async (req, res) => {
+  try {
+    const allurls = await URL.find({});
+    // console.log(allurls);
+    
+    return res.render("url", {
+      urls: allurls,
+    });
+  } catch (error) {
+    console.error("Error fetching URLs:", error);
+    return res.status(500).send("Internal Server Error");
+  }
+});
 
-module.exports = router
+module.exports = router;
